@@ -14,9 +14,19 @@ struct ContentView: View {
 
   var body: some View {
       VStack {
-          Text("Test")
-          TextField("Search", text: .constant(""))
+          HStack {
+              TextField("Expression", text: .constant(""))
+                  .font(.system(size: 30, design: .monospaced))
+              Button("Parse") {
+                  print("hi!")
+              }
+              
+          }
+          Text("Hello")
+              .padding(30)
       }
+      .frame(maxWidth: 700)
+      .padding(50)
 
 //        NavigationSplitView {
 //            List {

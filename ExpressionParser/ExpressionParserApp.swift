@@ -10,6 +10,9 @@ import SwiftData
 
 @main
 struct ExpressionParserApp: App {
+    
+    @StateObject var thing = Thing(name: "thing")
+    
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
@@ -26,6 +29,7 @@ struct ExpressionParserApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(thing)
         }
         .modelContainer(sharedModelContainer)
     }

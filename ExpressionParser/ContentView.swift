@@ -11,59 +11,44 @@ import SwiftData
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var items: [Item]
-
-  var body: some View {
-      VStack {
-          HStack {
-              TextField("Expression", text: .constant(""))
-                  .font(.system(size: 30, design: .monospaced))
-              Button("Parse") {
-                  print("hi!")
-              }
-              
-          }
-          Text("Hello")
-              .padding(30)
-      }
-      .frame(maxWidth: 700)
-      .padding(50)
-
-//        NavigationSplitView {
-//            List {
-//                ForEach(items) { item in
-//                    NavigationLink {
-//                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-//                    } label: {
-//                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-//                    }
-//                }
-//                .onDelete(perform: deleteItems)
-//            }
-//            .navigationSplitViewColumnWidth(min: 180, ideal: 200)
-//            .toolbar {
-//                ToolbarItem {
-//                    Button(action: addItem) {
-//                        Label("Add Item", systemImage: "plus")
-//                    }
-//                }
-//            }
-//        } detail: {
-//            Text("Select an item")
-//        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
+    
+    @State private var result: String? = nil
+    @State private var text: String = "1 + 12 * 3"
+    
+    var body: some View {
+        NavigationStack {
+            VStack {
+                HStack {
+                    TextField("Expression", text: $text)
+                        .font(.system(size: 30, design: .monospaced))
+                        .onSubmit {
+                            calculateResult()
+                        }
+                    
+                    Button("Parse") {
+                        calculateResult()
+                    }
+                }
+                
+                Text(result ?? "No result")
+                    .padding(30)
+            }
+            .frame(maxWidth: 700)
+            .padding(50)
+            .navigationTitle("Expression Parser")
+        }
+        .onAppear {
+            calculateResult()
         }
     }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
+    
+    private func calculateResult() {
+        let calculated = ExpressionParser.parse(text)
+        
+        if let calculated {
+            result = calculated
+        } else {
+            result = "Invalid Expression"
         }
     }
 }

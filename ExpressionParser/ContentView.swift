@@ -47,6 +47,7 @@ struct ContentView: View {
         
         if let calculated {
             result = calculated
+            print(calculated)
         } else {
             result = "Invalid Expression"
         }

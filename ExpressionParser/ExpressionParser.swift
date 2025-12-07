@@ -16,16 +16,32 @@ struct ExpressionParser {
         }
         
         let tree = treeify(tokens)
-        return "Result was: \(tree)"
+        let result = evaluate(tree: tree)
+        return "Result was: \(tree) -> \(result)"
     }
     
-    static func evaluate(_ expression: [Token?]) -> Double? {
-        let tokens = expression.compactMap(\.self)
-        if tokens.count != expression.count {
-            return nil
+    static func evaluate(tree: Value) -> Double {
+        if case .number(let number) = tree {
+            return number
         }
         
-        return nil
+        if case .node(let node) = tree {
+            let leftValue = evaluate(tree: node.children[0])
+            let rightValue = evaluate(tree: node.children[1])
+            
+            switch node.operation {
+            case .addition:
+                return leftValue + rightValue
+            case .subtraction:
+                return leftValue - rightValue
+            case .multiplication:
+                return leftValue * rightValue
+            case .division:
+                return leftValue / rightValue
+            }
+        }
+        
+        fatalError("How did we get here?")
     }
     
     static func treeify(_ expression: [Token]) -> Value {
